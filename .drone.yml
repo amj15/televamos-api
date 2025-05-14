@@ -1,0 +1,17 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: deploy
+    image: alpine
+    commands:
+      - rm -rf /srv/televamos-api
+      - cp -r . /srv/televamos-api
+      - cd /srv/televamos-api
+      - docker compose up -d --build
+
+volumes:
+  - name: docker_sock
+    host:
+      path: /var/run/docker.sock
