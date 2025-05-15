@@ -19,6 +19,9 @@ steps:
 
   - name: check mounted files
     image: docker
+    volumes:
+      - name: docker-sock
+        path: /var/run/docker.sock
     commands:
       - docker exec symfony_php ls -la /var/www/html
       - docker exec symfony_php cat /var/www/html/composer.json || echo "composer.json no encontrado"
