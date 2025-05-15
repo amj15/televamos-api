@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajustar horarios{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">Ajustar horario estimado de paso</h1>
+
+    {{ form_start(form, {'attr': {'class': 'mb-4'}}) }}
+    <div class="mb-3">
+        {{ form_label(form.distance) }}
+        {{ form_widget(form.distance, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.distance) }}
+    </div>
+    <div class="mb-3">
+        {{ form_label(form.current_time) }}
+        {{ form_widget(form.current_time, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.current_time) }}
+    </div>
+
+    <button class="btn btn-primary">Recalcular</button>
+    {{ form_end(form) }}
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success mt-3">{{ message }}</div>
+    {% endfor %}
+{% endblock %}
