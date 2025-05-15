@@ -10,7 +10,7 @@ steps:
         path: /var/run/docker.sock
     commands:
       - docker version
-      - docker build -t televamos-api:latest .
+      - docker build -t televamos-api:latest ./php
 
   - name: deploy
     image: docker/compose:latest
