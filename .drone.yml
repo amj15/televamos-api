@@ -17,11 +17,11 @@ steps:
       - docker version
       - docker build -t televamos-api:latest ./php
 
-  - name: check files
-    image: bash
+  - name: check symfony-app
+    image: alpine
     commands:
-      - ls -la ./symfony-app
-      - cat ./symfony-app/composer.json
+      - ls -la
+      - ls -la symfony-app
 
   - name: deploy
     image: docker/compose:latest
