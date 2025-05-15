@@ -7,8 +7,6 @@ services:
       dockerfile: Dockerfile
     container_name: symfony_php
     working_dir: /var/www/html
-    volumes:
-      - ./symfony-app:/var/www/html
     networks:
       - symfony
     environment:
@@ -20,7 +18,6 @@ services:
     ports:
       - "8000:80"
     volumes:
-      - ./symfony-app:/var/www/html
       - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
     depends_on:
       - php
