@@ -34,6 +34,7 @@ steps:
     commands:
       - docker-compose down
       - docker-compose up -d --build
+      - docker exec symfony_php ls -la /var/www/html
       - docker-compose run --rm php composer install --no-interaction --optimize-autoloader
       - docker-compose run --rm php php bin/console doctrine:migrations:migrate --no-interaction
 
