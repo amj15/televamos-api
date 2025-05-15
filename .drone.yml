@@ -18,6 +18,7 @@ steps:
       - docker build -t televamos-api:latest ./php
 
   - name: check files
+    image: bash
     commands:
       - ls -la ./symfony-app
       - cat ./symfony-app/composer.json
