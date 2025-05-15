@@ -2,6 +2,11 @@ kind: pipeline
 type: docker
 name: default
 
+params:
+  import_datetime:
+    description: Fecha y hora para la importación (YYYY-MM-DD HH:mm:ss)
+    default: ""
+
 steps:
   - name: build
     image: docker:latest
@@ -20,6 +25,20 @@ steps:
     commands:
       - docker-compose down
       - docker-compose up -d --build
+      - docker exec symfony_php composer install --no-interaction --optimize-autoloader
+      - docker exec symfony_php php bin/console doctrine:migrations:migrate --no-interaction
+
+  - name: import-gpx
+    image: docker:latest
+    depends_on:
+      - build_and_deploy
+    when:
+      event: manual
+    volumes:
+      - name: docker-sock
+        path: /var/run/docker.sock
+    commands:
+      - docker exec symfony_php php DATETIME=${DRONE_BUILD_PARAM_IMPORT_DATETIME:-$(date '+%Y-%m-%d %H:%M:%S')} memory_limit=512M bin/console app:import-gpx "$DATETIME"
 
 volumes:
   - name: docker-sock
