@@ -33,6 +33,9 @@ fixtures:
 cache-clear:
 	docker exec -it $(PHP_CONTAINER) php bin/console cache:clear
 
+consumer:
+	docker exec -it $(PHP_CONTAINER) php bin/console messenger:consume async
+
 permissions:
 	sudo chown -R $$(id -u):$$(id -g) symfony-app/var
 
