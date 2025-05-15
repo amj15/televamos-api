@@ -31,7 +31,7 @@ steps:
   - name: import-gpx
     image: docker:latest
     depends_on:
-      - build_and_deploy
+      - deploy
     when:
       event: manual
     volumes:
