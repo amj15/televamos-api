@@ -3,15 +3,22 @@ type: docker
 name: default
 
 steps:
-  - name: deploy
-    image: alpine
+  - name: build
+    image: docker:latest
     commands:
-      - rm -rf /srv/televamos-api
-      - cp -r . /srv/televamos-api
-      - cd /srv/televamos-api
-      - docker compose up -d --build
+      - docker version
+      - docker-compose -f docker-compose.yml build
+
+  - name: deploy
+    image: docker:latest
+    volumes:
+      - name: docker-sock
+        path: /var/run/docker.sock
+    commands:
+      - docker-compose -f docker-compose.yml down
+      - docker-compose -f docker-compose.yml up -d --build
 
 volumes:
-  - name: docker_sock
+  - name: docker-sock
     host:
       path: /var/run/docker.sock
