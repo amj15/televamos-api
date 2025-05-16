@@ -5,3 +5,5 @@ RUN rm -rf /etc/nginx/conf.d/default.conf
 
 # Copy the custom default.conf
 COPY ./docker/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
+
+COPY . /var/www/html

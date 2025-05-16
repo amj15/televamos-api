@@ -21,8 +21,8 @@ services:
     container_name: symfony_nginx
     ports:
       - "8000:80"
-    volumes:
-      - ./:/var/www/html:ro
+#    volumes:
+#      - ./:/var/www/html:ro
     depends_on:
       - php
     networks:
