@@ -15,7 +15,7 @@ steps:
       - name: docker-sock
         path: /var/run/docker.sock
     commands:
-      - docker build -t televamos-api:latest -f docker/php/Dockerfile .
+      - docker build -t televamos-api:latest -f docker/php/Dockerfile . --build-arg APP_ENV=prod
   - name: deploy
     image: docker/compose:latest
     volumes:
@@ -24,7 +24,6 @@ steps:
     commands:
       - docker-compose down
       - docker-compose up -d --build
-      - docker build -t televamos-api:latest -f docker/php/Dockerfile . --build-arg APP_ENV=prod
 
   - name: import-gpx
     image: docker:latest
