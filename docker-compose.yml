@@ -29,6 +29,7 @@ services:
       - php
     networks:
       - drone-net
+      - symfony_network
 
   db:
     image: postgres:13
