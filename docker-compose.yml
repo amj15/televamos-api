@@ -39,6 +39,7 @@ services:
       - "5433:5432"
     networks:
       - symfony_network
+      - drone-net
     volumes:
       - db_data:/var/lib/postgresql/data
 volumes:
