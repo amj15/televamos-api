@@ -9,6 +9,9 @@ up:
 down:
 	docker compose down
 
+stop:
+	docker compose stop
+
 restart:
 	docker compose down && docker compose up -d
 
