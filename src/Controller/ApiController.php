@@ -46,9 +46,8 @@ class ApiController extends AbstractController
             $point = $points[0];
             \assert($point instanceof TrackPoint);
 
-            for($i=0; $i <= 60; $i++){
-                $resultPoint[] = $point->jsonSerialize();
-            }
+            $resultPoint[] = $point->jsonSerialize();
+
 
             if($point->id() === 1 && $point->estimatedTime() > $utcTime) {
                 $status = 'not_started';
@@ -61,20 +60,11 @@ class ApiController extends AbstractController
             }
         }else{
             $pointIndex = 0;
-            for($i=0; $i <= 60; $i++){
-                $point = $points[$pointIndex];
+            foreach ($points as $point) {
                 \assert($point instanceof TrackPoint);
-
-                if($point->estimatedTime() > $utcTime) {
-                    $pointIndex++;
-                }
-
-                if($pointIndex >= \count($points)) {
-                    $pointIndex = \count($points) - 1;
-                }
-
                 $resultPoint[] = $point->jsonSerialize();
             }
+
             $status = 'running';
         }
 

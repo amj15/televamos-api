@@ -1,0 +1,145 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Track Map{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        #map {
+            height: calc(100vh - 70px); /* Por ejemplo, si tienes una navbar o título */
+            width: 100%;
+        }
+        .progress-container {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8f9fa;
+            padding: 0 1rem;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .progress-bar-wrapper {
+            flex: 0 0 80%;
+            display: flex;
+            align-items: center;
+        }
+
+        .progress-icon {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+            margin-left: 0.5rem;
+        }
+
+        .progress {
+            width: 100%;
+            height: 20px;
+        }
+
+        .eta {
+            flex: 0 0 20%;
+            text-align: right;
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div id="map"></div>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar-wrapper">
+            <i class="fas fa-flag-checkered progress-icon text-success"></i>
+            <div class="progress">
+                <div id="progress-bar" class="progress-bar progress-bar-striped bg-primary progress-bar-animated" role="progressbar" style="width: 0%">0%</div>
+            </div>
+            <i class="fas fa-bullseye progress-icon text-danger"></i>
+        </div>
+        <div class="eta font-weight-bolder" style="font-size: 20px;" id="eta-text">Llegada estimada:: --:--</div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const apiUrl = '{{ path('track_segment') }}';
+
+            /* ---------- icono corredor ---------- */
+            const runnerIcon = L.divIcon({
+                html: '<i class="fas fa-person-running fa-3x text-danger"></i>',
+                className: '',
+                iconSize: [24, 24],
+                iconAnchor: [12, 12],
+            });
+
+            /* ---------- mapa + capa base ---------- */
+            const map = L.map('map').setView([37.6, -1.78], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+            let marker = null;              // corredor
+            const totalKm = 290;            // distancia total
+
+            /* ---------- barra de progreso + ETA ---------- */
+            function updateUI(point) {
+                const percentage   = Math.min(100, (point.distance / 1000) / totalKm * 100).toFixed(1);
+                document.getElementById('progress-bar').style.width = `${percentage}%`;
+                document.getElementById('progress-bar').textContent = `${percentage}%`;
+
+                const remainingKm  = totalKm - point.distance / 1000;
+                const eta          = new Date(Date.now() + (remainingKm / 10) * 3600_000); // 10 km/h
+                document.getElementById('eta-text').textContent =
+                    `Llegada estimada: ${eta.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}`;
+            }
+
+            /* ---------- mueve el marcador al punto correcto ---------- */
+            function updateMarker(points) {
+                const now = new Date();
+                const eligible = points.filter(p => new Date(p.estimatedTime) <= now);
+
+                const point = (eligible.length ? eligible.at(-1) : points.at(-1));
+                const latlng = [point.latitude, point.longitude];
+
+                if (!marker) {
+                    marker = L.marker(latlng, {icon: runnerIcon}).addTo(map);
+                } else {
+                    marker.setLatLng(latlng);
+                }
+                map.panTo(latlng);
+                updateUI(point);
+            }
+
+            /* ---------- llamada a la API ---------- */
+            function fetchPositions() {
+                const now = new Date().toISOString();
+                fetch(`${apiUrl}?time=${encodeURIComponent(now)}`, {
+                    headers: {Authorization: `Bearer dd3c5134-30ac-11f0-9cd2-0242ac120002`}
+                })
+                    .then(r => r.json())
+                    .then(d => d.points?.length && updateMarker(d.points))
+                    .catch(console.error);
+            }
+
+            /* ---------- carga del trazado y arranque ---------- */
+            fetch('{{ path('track_geojson') }}')
+                .then(r => r.json())
+                .then(geojson => {
+                    const route = L.geoJSON(geojson, {style: {color: 'blue', weight: 4}}).addTo(map);
+                    map.fitBounds(route.getBounds());
+
+
+                    fetchPositions();                    // primera posición
+                    setInterval(fetchPositions, 60_000); // cada minuto
+                })
+                .catch(err => console.error('Error al cargar ruta:', err));
+        });
+    </script>
+{% endblock %}
