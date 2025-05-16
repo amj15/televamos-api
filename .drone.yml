@@ -24,12 +24,11 @@ steps:
     volumes:
       - name: docker-sock
         path: /var/run/docker.sock
-    environment:
-      COMPOSE_FILE: docker-compose.yml
     commands:
       - docker-compose -f docker-compose.yml pull
       - docker-compose -f docker-compose.yml down
       - docker-compose -f docker-compose.yml up -d --build
+      - docker exec -w /var/www/html symfony_php ls -al bin
         # Espera a que PHP esté listo (opcional, si el contenedor arranca lento)
       - sleep 5
         # Ejecuta migrations desde dentro del contenedor, asegurando el working_dir
@@ -58,6 +57,11 @@ steps:
         path: /var/run/docker.sock
     commands:
       - docker exec symfony_php php DATETIME=${DRONE_BUILD_PARAM_IMPORT_DATETIME:-$(date '+%Y-%m-%d %H:%M:%S')} memory_limit=512M bin/console app:import-gpx "$DATETIME"
+
+  - name: sanity-check
+    image: alpine
+    commands:
+      - if [ -d docker/nginx/conf.d/default.conf ]; then echo "❌ default.conf es un directorio, debería ser un archivo"; exit 1; fi
 
 volumes:
   - name: docker-sock
