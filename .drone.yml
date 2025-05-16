@@ -16,16 +16,7 @@ steps:
         path: /var/run/docker.sock
     commands:
       - docker version
-      - docker build -t televamos-api:latest ./php
-
-  - name: check mounted files
-    image: docker
-    volumes:
-      - name: docker-sock
-        path: /var/run/docker.sock
-    commands:
-      - docker exec symfony_php ls -la /var/www/html
-      - docker exec symfony_php cat /var/www/html/composer.json || echo "composer.json no encontrado"
+      - docker build -t televamos-api:latest -f docker/php/Dockerfile .
 
   - name: deploy
     image: docker/compose:latest
@@ -35,7 +26,6 @@ steps:
     commands:
       - docker-compose down
       - docker-compose up -d --build
-      - docker exec symfony_php ls -la /var/www/html
       - docker-compose run --rm php composer install --no-interaction --optimize-autoloader
       - docker-compose run --rm php php bin/console doctrine:migrations:migrate --no-interaction
 

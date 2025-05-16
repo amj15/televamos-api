@@ -1,24 +1,24 @@
 ###> symfony/framework-bundle ###
-symfony-app/.env.local
-symfony-app/.env.local.php
-symfony-app/.env.*.local
-symfony-app/config/secrets/prod/prod.decrypt.private.php
-symfony-app/public/bundles/
-symfony-app/var/
-symfony-app/vendor/
+.env.local
+.env.local.php
+.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
+/vendor/
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
-symfony-app/phpunit.xml
-symfony-app/.phpunit.result.cache
+phpunit.xml
+.phpunit.result.cache
 ###< phpunit/phpunit ###
 
 ###> symfony/phpunit-bridge ###
-symfony-app/.phpunit.result.cache
-symfony-app/phpunit.xml
+.phpunit.result.cache
+phpunit.xml
 ###< symfony/phpunit-bridge ###
 
 ###> symfony/asset-mapper ###
-symfony-app/public/assets/
-symfony-app/assets/vendor/
+/public/assets/
+/assets/vendor/
 ###< symfony/asset-mapper ###
