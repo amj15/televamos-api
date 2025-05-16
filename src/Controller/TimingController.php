@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Form\AdjustTimingType;
 use App\Entity\TrackPoint;
 use App\Message\RecalculateMessage;
+use App\Repository\TrackPointRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,7 +22,7 @@ class TimingController extends AbstractController
     }
 
     #[Route('/adjust', name: 'adjust_timing')]
-    public function adjust(Request $request, EntityManagerInterface $em)
+    public function adjust(Request $request)
     {
         $form = $this->createForm(AdjustTimingType::class);
         $form->handleRequest($request);
@@ -47,5 +48,16 @@ class TimingController extends AbstractController
         return $this->render('timing/adjust.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/points', name: 'points')]
+    public function adjust(Request $request, TrackPointRepository $repository)
+    {
+        $points = $repository->findBy(
+            [],[],10,0
+        );
+
+        return $this->json($points);
+
     }
 }

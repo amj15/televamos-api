@@ -15,7 +15,7 @@ steps:
       - name: docker-sock
         path: /var/run/docker.sock
     commands:
-      - docker build -t televamos-api:latest -f docker/php/Dockerfile . --build-arg APP_ENV=prod
+      - docker build -t televamos-api:latest -f docker/php/Dockerfile . --build-arg APP_ENV=prod --build-arg APP_DEBUG=0
   - name: deploy
     image: docker/compose:latest
     volumes:
