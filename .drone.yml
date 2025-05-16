@@ -24,9 +24,13 @@ steps:
       - name: docker-sock
         path: /var/run/docker.sock
     commands:
-      - docker-compose down
-      - docker-compose up -d --build
-      - docker exec symfony_php php bin/console doctrine:migrations:migrate --no-interaction
+      - docker-compose -f ${COMPOSE_FILE} pull
+      - docker-compose -f ${COMPOSE_FILE} down
+      - docker-compose -f ${COMPOSE_FILE} up -d --build
+        # Espera a que PHP esté listo (opcional, si el contenedor arranca lento)
+      - sleep 5
+        # Ejecuta migrations desde dentro del contenedor, asegurando el working_dir
+      - docker exec -w /var/www/html symfony_php php bin/console doctrine:migrations:migrate --no-interaction
 
   - name: check default.conf
     image: alpine
