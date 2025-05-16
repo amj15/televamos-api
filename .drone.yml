@@ -28,6 +28,12 @@ steps:
       - docker-compose up -d --build
       - docker exec symfony_php php bin/console doctrine:migrations:migrate --no-interaction
 
+  - name: check default.conf
+    image: alpine
+    commands:
+      - if [ -d docker/nginx/conf.d/default.conf ]; then echo "default.conf es un directorio y no debería"; exit 1; fi
+      - ls -l docker/nginx/conf.d/
+
   - name: import-gpx
     image: docker:latest
     depends_on:
