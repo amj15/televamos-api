@@ -11,8 +11,8 @@ services:
 #      - ./:/var/www/html
     networks:
       - symfony_network
-    environment:
-      DATABASE_URL: "pgsql://symfony_user:symfony_password@symfony_postgres:5432/symfony_db"
+#    environment:
+#      DATABASE_URL: "pgsql://symfony_user:symfony_password@symfony_postgres:5432/symfony_db"
 
   nginx:
     build:

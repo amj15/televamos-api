@@ -17,6 +17,9 @@ COPY . /var/www/html
 ARG APP_ENV=dev
 ENV APP_ENV=${APP_ENV}
 
+ARG APP_DEBUG=1
+ENV APP_DEBUG=${APP_DEBUG}
+
 RUN if [ "$APP_ENV" = "prod" ]; then \
         composer install --no-dev --optimize-autoloader; \
     else \
