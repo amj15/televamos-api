@@ -13,4 +13,12 @@ RUN apt-get update && apt-get install -y \
 # Instala Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 COPY . /var/www/html
-RUN composer install --no-dev --optimize-autoloader
+
+ARG APP_ENV=dev
+ENV APP_ENV=${APP_ENV}
+
+RUN if [ "$APP_ENV" = "prod" ]; then \
+        composer install --no-dev --optimize-autoloader; \
+    else \
+        composer install; \
+    fi

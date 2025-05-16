@@ -11,19 +11,11 @@ params:
 steps:
   - name: build
     image: docker:latest
-    environment:
-      APP_ENV: prod
-      APP_DEBUG: 0
     volumes:
       - name: docker-sock
         path: /var/run/docker.sock
     commands:
       - docker build -t televamos-api:latest -f docker/php/Dockerfile .
-  - name: debug-ls
-    image: alpine
-    commands:
-      - ls -la
-
   - name: deploy
     image: docker/compose:latest
     volumes:
@@ -32,7 +24,7 @@ steps:
     commands:
       - docker-compose down
       - docker-compose up -d --build
-      - docker-compose run --rm php php bin/console doctrine:migrations:migrate --no-interaction
+      - docker build -t televamos-api:latest -f docker/php/Dockerfile . --build-arg APP_ENV=prod
 
   - name: import-gpx
     image: docker:latest
