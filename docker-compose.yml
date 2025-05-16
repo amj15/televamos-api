@@ -39,6 +39,10 @@ services:
       - "5433:5432"
     networks:
       - drone-net
+    volumes:
+      - db_data:/var/lib/postgresql/data
+volumes:
+  db_data:
 
 networks:
   drone-net:

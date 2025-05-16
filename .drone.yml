@@ -24,6 +24,7 @@ steps:
     commands:
       - docker-compose down
       - docker-compose up -d --build
+      - docker exec symfony_php php bin/console doctrine:migrations:migrate --no-interaction
 
   - name: import-gpx
     image: docker:latest
