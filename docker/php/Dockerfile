@@ -25,7 +25,7 @@ ARG APP_DEBUG=1
 ENV APP_DEBUG=${APP_DEBUG}
 
 RUN if [ "$APP_ENV" = "prod" ]; then \
-        composer install --no-dev --optimize-autoloader; \
+        composer install --no-dev --optimize-autoloader --no-scripts; \
     else \
         composer install; \
     fi
