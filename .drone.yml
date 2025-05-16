@@ -20,6 +20,7 @@ steps:
 
   - name: deploy
     image: docker/compose:latest
+    working_dir: /drone/src
     volumes:
       - name: docker-sock
         path: /var/run/docker.sock
