@@ -51,7 +51,7 @@ class TimingController extends AbstractController
     }
 
     #[Route('/points', name: 'points')]
-    public function adjust(Request $request, TrackPointRepository $repository)
+    public function points(Request $request, TrackPointRepository $repository)
     {
         $points = $repository->findBy(
             [],[],10,0
