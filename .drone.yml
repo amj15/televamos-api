@@ -15,8 +15,12 @@ steps:
       - name: docker-sock
         path: /var/run/docker.sock
     commands:
-      - docker version
       - docker build -t televamos-api:latest -f docker/php/Dockerfile .
+
+  - name: debug-ls
+    image: alpine
+    commands:
+      - ls -la
 
   - name: deploy
     image: docker/compose:latest
