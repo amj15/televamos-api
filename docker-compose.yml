@@ -10,7 +10,7 @@ services:
 #    volumes:
 #      - ./:/var/www/html
     networks:
-      - drone-net
+      - symfony_network
     environment:
       DATABASE_URL: "pgsql://symfony_user:symfony_password@db:5433/symfony_db"
 
@@ -38,7 +38,7 @@ services:
     ports:
       - "5433:5432"
     networks:
-      - drone-net
+      - symfony_network
     volumes:
       - db_data:/var/lib/postgresql/data
 volumes:
@@ -47,3 +47,5 @@ volumes:
 networks:
   drone-net:
     external: true
+  symfony_network:
+    driver: bridge
