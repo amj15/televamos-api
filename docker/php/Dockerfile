@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
 
 COPY wait-for-it.sh /usr/local/bin/wait-for-it
 
-CMD: ["wait-for-it", "db:5432", "--", "php-fpm"]
+CMD ["wait-for-it", "db:5432", "--", "php-fpm"]
 
 # Instala Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
