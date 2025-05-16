@@ -1,6 +1,7 @@
 FROM php:8.2-fpm
 
 RUN apt-get update && apt-get install -y \
+    netcat \
     git \
     unzip \
     libpq-dev \
@@ -9,6 +10,8 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     zip \
     && docker-php-ext-install intl pdo pdo_pgsql opcache
+
+COPY wait-for-it.sh /usr/local/bin/wait-for-it
 
 # Instala Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
