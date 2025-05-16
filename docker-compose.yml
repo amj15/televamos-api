@@ -20,8 +20,8 @@ services:
     ports:
       - "8000:80"
     volumes:
-      - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
       - ./:/var/www/html:ro
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
     depends_on:
       - php
     networks:
