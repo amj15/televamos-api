@@ -23,6 +23,8 @@ steps:
     volumes:
       - name: docker-sock
         path: /var/run/docker.sock
+    environment:
+      COMPOSE_FILE: docker-compose.yml
     commands:
       - docker-compose -f ${COMPOSE_FILE} pull
       - docker-compose -f ${COMPOSE_FILE} down
