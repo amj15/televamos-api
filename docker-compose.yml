@@ -7,29 +7,26 @@ services:
       dockerfile: docker/php/Dockerfile
     container_name: symfony_php
     working_dir: /var/www/html
-    depends_on:
-      - db
-#    volumes:
-#      - ./:/var/www/html
+    volumes:
+      - ./:/var/www/html
     networks:
-      - symfony_network
-#    environment:
-#      DATABASE_URL: "pgsql://symfony_user:symfony_password@symfony_postgres:5432/symfony_db"
+      - symfony
+    environment:
+      DATABASE_URL: "pgsql://symfony_user:symfony_password@db:5433/symfony_db"
 
   nginx:
-    build:
-      context: .
-      dockerfile: docker/nginx/Dockerfile
+    image: nginx:alpine
     container_name: symfony_nginx
     ports:
       - "8000:80"
-#    volumes:
-#      - ./:/var/www/html:ro
+    volumes:
+      - ./:/var/www/html:ro
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
     depends_on:
       - php
     networks:
+      - symfony
       - drone-net
-      - symfony_network
 
   db:
     image: postgres:13
@@ -41,15 +38,10 @@ services:
     ports:
       - "5433:5432"
     networks:
-      - symfony_network
-      - drone-net
-    volumes:
-      - db_data:/var/lib/postgresql/data
-volumes:
-  db_data:
+      - symfony
 
 networks:
+  symfony:
+    driver: bridge
   drone-net:
     external: true
-  symfony_network:
-    driver: bridge
