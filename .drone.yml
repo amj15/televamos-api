@@ -41,6 +41,12 @@ steps:
       - if [ -d docker/nginx/conf.d/default.conf ]; then echo "default.conf es un directorio y no debería"; exit 1; fi
       - ls -l docker/nginx/conf.d/
 
+  - name: debug
+    image: alpine
+    commands:
+      - ls -al .
+      - ls -al bin
+
   - name: import-gpx
     image: docker:latest
     depends_on:
