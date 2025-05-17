@@ -31,12 +31,20 @@ class TimingController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
+            $password = $data['password'];
             $distance = $data['distance'];
             $newStartTime = $data['current_time'];
 
+            if ($password !== 'travesia') {
+                $this->addFlash('error', 'Contraseña incorrecta.');
+                return $this->redirectToRoute('adjust_timing');
+            }
+
+            $dateStart = new \DateTimeImmutable($newStartTime->format('Y-m-d H:i:s'));
+
             $message = new RecalculateMessage(
                 $distance,
-                new \DateTimeImmutable($newStartTime->format('Y-m-d H:i:s')),
+                $dateStart->modify('-2 hours'),
             );
 
             $this->messageBus->dispatch($message);

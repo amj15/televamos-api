@@ -37,7 +37,7 @@ cache-clear:
 	docker exec -it $(PHP_CONTAINER) php bin/console cache:clear
 
 consumer:
-	docker exec -it $(PHP_CONTAINER) php bin/console messenger:consume async
+	docker exec -it $(PHP_CONTAINER) php -d memory_limit=512M bin/console messenger:consume async -vvv
 
 permissions:
 	sudo chown -R $$(id -u):$$(id -g) symfony-app/var

@@ -32,6 +32,7 @@ class TrackAdjuster
             $newTime = (new \DateTimeImmutable())->setTimestamp($referenceTime->getTimestamp() + $seconds);
             $trackPoint->setEstimatedTime($newTime);
             $this->em->flush();
+            $this->em->clear();
         }
     }
 

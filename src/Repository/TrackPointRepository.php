@@ -22,7 +22,8 @@ class TrackPointRepository extends ServiceEntityRepository
             ->where('t.estimatedTime BETWEEN :start AND :end')
             ->setParameter('start', $start)
             ->setParameter('end', $end)
-            ->orderBy('t.estimatedTime', 'ASC')
+            ->orderBy('t.distance', 'DESC')
+            ->setMaxResults(1)
             ->getQuery()
             ->getResult();
 
@@ -33,7 +34,7 @@ class TrackPointRepository extends ServiceEntityRepository
         $currentPoints =  $this->createQueryBuilder('t')
             ->where('t.estimatedTime < :start')
             ->setParameter('start', $start)
-            ->orderBy('t.estimatedTime', 'DESC')
+            ->orderBy('t.distance', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
             ->getResult();
