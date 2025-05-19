@@ -6,6 +6,7 @@ use App\Form\AdjustTimingType;
 use App\Entity\TrackPoint;
 use App\Message\RecalculateMessage;
 use App\Repository\TrackPointRepository;
+use App\Service\TrackAdjuster;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,7 +25,7 @@ class TimingController extends AbstractController
     }
 
     #[Route('/adjust', name: 'adjust_timing')]
-    public function adjust(Request $request)
+    public function adjust(Request $request, TrackAdjuster $trackAdjuster)
     {
         $form = $this->createForm(AdjustTimingType::class);
         $form->handleRequest($request);
@@ -42,12 +43,14 @@ class TimingController extends AbstractController
 
             $dateStart = new \DateTimeImmutable($newStartTime->format('Y-m-d H:i:s'));
 
-            $message = new RecalculateMessage(
-                $distance,
-                $dateStart->modify('-2 hours'),
-            );
+            $trackAdjuster->execute($distance, $dateStart);
 
-            $this->messageBus->dispatch($message);
+//            $message = new RecalculateMessage(
+//                $distance,
+//                $dateStart->modify('-2 hours'),
+//            );
+//
+//                $this->messageBus->dispatch($message);
 
 
             $this->addFlash('success', 'Horarios recalculados a partir de la nueva posición.');

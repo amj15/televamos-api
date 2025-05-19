@@ -17,23 +17,19 @@ class TrackAdjuster
 
     public function execute(int $distanceInMeters, \DateTimeImmutable $referenceTime): void
     {
-        $trackPoints = $this->em->getRepository(TrackPoint::class)
-            ->createQueryBuilder('tp')
-            ->where('tp.distance >= :dist')
-            ->setParameter('dist', $distanceInMeters)
-            ->orderBy('tp.distance', 'ASC')
-            ->getQuery()
-            ->getResult();
+        $conn = $this->em->getConnection();
 
-        foreach ($trackPoints as $trackPoint) {
-            \assert($trackPoint instanceof TrackPoint);
-            $diffMeters = $trackPoint->distance() - $distanceInMeters;
-            $seconds = (int) round($diffMeters / self::SPEED_MS);
-            $newTime = (new \DateTimeImmutable())->setTimestamp($referenceTime->getTimestamp() + $seconds);
-            $trackPoint->setEstimatedTime($newTime);
-            $this->em->flush();
-            $this->em->clear();
-        }
+        $sql = <<<SQL
+        UPDATE track_point
+        SET estimated_time = :referenceTime::timestamp + ((distance - :referenceDistance) / :speed) * INTERVAL '1 second'
+        WHERE distance >= :referenceDistance
+    SQL;
+
+        $conn->executeStatement($sql, [
+            'referenceTime' => $referenceTime->format('Y-m-d H:i:s'), // sin zona horaria
+            'referenceDistance' => $distanceInMeters,
+            'speed' => 2.77777778, // 10 km/h en m/s
+        ]);
     }
 
 }
